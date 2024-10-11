@@ -19,24 +19,26 @@
   <meta name="author" content="Azu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="🤔 什么是 Zabbix？Zabbix 是一款开源的监控软件，用于监控 🌐 网络设备、💻 服务器和应用程序等多种资源的运行状态。它可以通过多种方式发出🔔 警报，帮助运维人员快速定位和解决问题，确保企业的服务运行稳定。Zabbix 支持分布式部署和图形化管理界面，使得它在复杂环境中也能轻松使用。 官网地址：https:&#x2F;&#x2F;www.zabbix.com&#x2F; 🛠️ Zabbix 组件1. Zab">
+    <meta name="description" content="前言首先国庆快乐，最近因为工作的忙碌和个人的懈怠。学习的进度被拖慢了，所以国庆假期补一点。本章主要讨论了如何利用时间序列数据构建高效、准确的报警系统（监控），帮助团队在运维过程中快速识别问题并作出反应。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zabbix学习记录_1">
-<meta property="og:url" content="http://example.com/2024/08/11/zabbix%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-1/index.html">
+<meta property="og:title" content="SRE-Google运维解密-第十章基于时间序列数据进行有效报警">
+<meta property="og:url" content="http://example.com/2024/10/03/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E5%8D%81%E7%AB%A0%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%9C%89%E6%95%88%E6%8A%A5%E8%AD%A6/index.html">
 <meta property="og:site_name" content="Azu blog">
-<meta property="og:description" content="🤔 什么是 Zabbix？Zabbix 是一款开源的监控软件，用于监控 🌐 网络设备、💻 服务器和应用程序等多种资源的运行状态。它可以通过多种方式发出🔔 警报，帮助运维人员快速定位和解决问题，确保企业的服务运行稳定。Zabbix 支持分布式部署和图形化管理界面，使得它在复杂环境中也能轻松使用。 官网地址：https:&#x2F;&#x2F;www.zabbix.com&#x2F; 🛠️ Zabbix 组件1. Zab">
+<meta property="og:description" content="前言首先国庆快乐，最近因为工作的忙碌和个人的懈怠。学习的进度被拖慢了，所以国庆假期补一点。本章主要讨论了如何利用时间序列数据构建高效、准确的报警系统（监控），帮助团队在运维过程中快速识别问题并作出反应。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-08-11T10:34:30.000Z">
-<meta property="article:modified_time" content="2024-10-11T08:07:55.823Z">
+<meta property="og:image" content="http://example.com/img/SRE.png">
+<meta property="article:published_time" content="2024-10-03T15:30:15.000Z">
+<meta property="article:modified_time" content="2024-10-08T01:10:48.064Z">
 <meta property="article:author" content="Azu">
 <meta property="article:tag" content="基础IT架构">
-<meta property="article:tag" content="zabbix">
-<meta property="article:tag" content="运维监控">
+<meta property="article:tag" content="SRE">
+<meta property="article:tag" content="google">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/SRE.png">
   
   
   
-  <title>zabbix学习记录_1 - Azu blog</title>
+  <title>SRE-Google运维解密-第十章基于时间序列数据进行有效报警 - Azu blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -215,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="zabbix学习记录_1"></span>
+            <span id="subtitle" data-typed-text="SRE-Google运维解密-第十章基于时间序列数据进行有效报警"></span>
           
         </div>
 
@@ -226,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-08-11 18:34" pubdate>
-          2024年8月11日 晚上
+        <time datetime="2024-10-03 23:30" pubdate>
+          2024年10月3日 晚上
         </time>
       </span>
     
@@ -238,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          869 字
+          92 字
         
       </span>
     
@@ -249,7 +251,7 @@
         
         
         
-          8 分钟
+          1 分钟
         
       </span>
     
@@ -295,43 +297,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">zabbix学习记录_1</h1>
+            <h1 id="seo-header">SRE-Google运维解密-第十章基于时间序列数据进行有效报警</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="🤔-什么是-Zabbix？"><a href="#🤔-什么是-Zabbix？" class="headerlink" title="🤔 什么是 Zabbix？"></a>🤔 什么是 Zabbix？</h2><p>Zabbix 是一款开源的监控软件，用于监控 🌐 网络设备、💻 服务器和应用程序等多种资源的运行状态。它可以通过多种方式发出🔔 警报，帮助运维人员快速定位和解决问题，确保企业的服务运行稳定。Zabbix 支持分布式部署和图形化管理界面，使得它在复杂环境中也能轻松使用。</p>
-<p>官网地址：<a target="_blank" rel="noopener" href="https://www.zabbix.com/">https://www.zabbix.com/</a></p>
-<h3 id="🛠️-Zabbix-组件"><a href="#🛠️-Zabbix-组件" class="headerlink" title="🛠️ Zabbix 组件"></a>🛠️ Zabbix 组件</h3><h4 id="1-Zabbix-Server"><a href="#1-Zabbix-Server" class="headerlink" title="1. Zabbix Server"></a>1. Zabbix Server</h4><p>Zabbix Server 是 Zabbix 的核心部分，负责存储所有的配置信息、统计信息和操作数据。它接收 Zabbix Agent 发送的监控数据并进行处理。</p>
-<h4 id="2-🌐-Web-界面"><a href="#2-🌐-Web-界面" class="headerlink" title="2. 🌐 Web 界面"></a>2. 🌐 Web 界面</h4><p>Zabbix 提供了图形化的 Web 界面，方便用户查看监控数据和管理配置。</p>
-<h4 id="3-🗄️-数据库"><a href="#3-🗄️-数据库" class="headerlink" title="3. 🗄️ 数据库"></a>3. 🗄️ 数据库</h4><p>Zabbix 使用数据库来存储所有的监控数据，包括配置和历史记录等。</p>
-<h4 id="4-Zabbix-Proxy"><a href="#4-Zabbix-Proxy" class="headerlink" title="4. Zabbix Proxy"></a>4. Zabbix Proxy</h4><p>Zabbix Proxy 作为中间节点，帮助 Zabbix Server 采集数据，减轻其负担。它常用于大型网络环境、跨机房或跨网络场景。</p>
-<h4 id="5-Zabbix-Agent"><a href="#5-Zabbix-Agent" class="headerlink" title="5. Zabbix Agent"></a>5. Zabbix Agent</h4><p>Zabbix Agent 部署在被监控的设备上，主动收集本地的资源和应用数据，并发送给 Zabbix Server。</p>
-<h3 id="⚙️-Zabbix-的工作原理"><a href="#⚙️-Zabbix-的工作原理" class="headerlink" title="⚙️ Zabbix 的工作原理"></a>⚙️ Zabbix 的工作原理</h3><p>Zabbix 通过安装在被监控设备上的 Agent 来收集数据，Agent 将这些数据发送给 Zabbix Server 进行存储和处理。</p>
-<h4 id="📊-数据收集模式"><a href="#📊-数据收集模式" class="headerlink" title="📊 数据收集模式"></a>📊 数据收集模式</h4><p>主动模式：Agent 主动向 Server 请求监控项列表，并提交收集到的数据。</p>
-<p>被动模式：Server 向 Agent 请求数据，Agent 返回监控结果。</p>
-<h4 id="🔄-Zabbix-的主要进程"><a href="#🔄-Zabbix-的主要进程" class="headerlink" title="🔄 Zabbix 的主要进程"></a>🔄 Zabbix 的主要进程</h4><p>zabbix_agentd：Agent 进程，负责收集被监控设备的数据。</p>
-<p>zabbix_server：Server 进程，负责与 Agent 通信并存储监控数据。</p>
-<p>zabbix_proxy：Proxy 进程，作为中间节点采集数据并转发给 Server。</p>
-<p>zabbix_get：用于远程获取客户端的数据，常用于排查问题。</p>
-<p>zabbix_sender：用于主动发送监控数据给 Server，适用于耗时较长的检查。</p>
-<p>zabbix_java_gateway：用于监控 Java 应用程序的 JVM 状态。</p>
-<h3 id="🔍-Zabbix-的监控能力"><a href="#🔍-Zabbix-的监控能力" class="headerlink" title="🔍 Zabbix 的监控能力"></a>🔍 Zabbix 的监控能力</h3><p>🖥️ 硬件监控：通过 IPMI 接口监控设备的物理状态（如温度、电压）。</p>
-<p>💾 系统监控：使用 Zabbix Agent 监控服务器的 CPU、内存等系统资源。</p>
-<p>☕ Java 应用监控：通过 JMX 接口监控 Java 虚拟机。</p>
-<p>🌐 网络设备监控：通过 SNMP 协议监控路由器、交换机等网络设备。</p>
-<p>📊 应用服务监控：例如 MySQL 数据库、Web 服务等。</p>
-<h3 id="📝-Zabbix-的常用术语"><a href="#📝-Zabbix-的常用术语" class="headerlink" title="📝 Zabbix 的常用术语"></a>📝 Zabbix 的常用术语</h3><p>主机（Host）：被监控的设备，由 IP 或主机名指定。</p>
-<p>主机组（Host Group）：主机和模板的逻辑集合，用于分配权限。</p>
-<p>监控项（Item）：具体的监控指标，例如 CPU 使用率、内存大小等。</p>
-<p>触发器（Trigger）：用于判断监控项的值是否在合理范围内，超出即触发警报。</p>
-<p>事件（Event）：触发器触发后的状态变化。</p>
-<p>动作（Action）：触发特定事件后的响应措施，例如发送警报邮件。</p>
-<p>报警升级（Escalation）：用于定义警报发送或执行远程命令的策略。</p>
-<p>媒介（Media）：发送通知的手段，例如邮件、微信等。</p>
-<p>模板（Template）：预定义的一组监控项、触发器等，用于快速配置主机。</p>
-<p>Web 场景（Web Scenario）：用于检测 Web 服务可用性的 HTTP 请求集合。</p>
-<h2 id="🔚-总结"><a href="#🔚-总结" class="headerlink" title="🔚 总结"></a>🔚 总结</h2><p>通过本次学习，大家对 Zabbix 有了初步的了解。Zabbix 作为一款开源的监控系统，具备强大而灵活的功能，可以满足不同规模企业对 IT 资源的监控需求。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>首先国庆快乐，最近因为工作的忙碌和个人的懈怠。学习的进度被拖慢了，所以国庆假期补一点。<br>本章主要讨论了如何利用时间序列数据构建高效、准确的报警系统（监控），帮助团队在运维过程中快速识别问题并作出反应。</p>
 
                 
               </div>
@@ -350,7 +321,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%BD%91%E7%BB%9C%E8%BF%90%E7%BB%B4/" class="category-chain-item">网络运维</a>
+  <a href="/categories/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86/" class="category-chain-item">SRE-Google运维解密</a>
   
   
 
@@ -367,9 +338,9 @@
       
         <a href="/tags/%E5%9F%BA%E7%A1%80IT%E6%9E%B6%E6%9E%84/" class="print-no-link">#基础IT架构</a>
       
-        <a href="/tags/zabbix/" class="print-no-link">#zabbix</a>
+        <a href="/tags/SRE/" class="print-no-link">#SRE</a>
       
-        <a href="/tags/%E8%BF%90%E7%BB%B4%E7%9B%91%E6%8E%A7/" class="print-no-link">#运维监控</a>
+        <a href="/tags/google/" class="print-no-link">#google</a>
       
     </div>
   
@@ -381,8 +352,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>zabbix学习记录_1</div>
-      <div>http://example.com/2024/08/11/zabbix学习记录-1/</div>
+      <div>SRE-Google运维解密-第十章基于时间序列数据进行有效报警</div>
+      <div>http://example.com/2024/10/03/SRE-Google运维解密-第十章基于时间序列数据进行有效报警/</div>
     </div>
     <div class="license-meta">
       
@@ -394,7 +365,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年8月11日</div>
+          <div>2024年10月3日</div>
         </div>
       
       
@@ -426,18 +397,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/08/12/Docker%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-1/" title="Docker学习记录_1">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Docker学习记录_1</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/08/11/winget%E5%B7%A5%E5%85%B7%E6%A6%82%E8%BF%B0/" title="winget工具概述">
-                        <span class="hidden-mobile">winget工具概述</span>
+                      <a href="/2024/09/20/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0%E7%AE%80%E5%8D%95%E5%8C%96/" title="SRE-Google运维解密-第九章简单化">
+                        <span class="hidden-mobile">SRE-Google运维解密-第九章简单化</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
