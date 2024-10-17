@@ -19,16 +19,16 @@
   <meta name="author" content="Azu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言📖本章更像是在阐述一种广泛适用的世俗哲理，而非技术理论。其理念不仅可以应用于技术工作，还能延伸到生活的方方面面。 “如果系统在正常运转过程中需要人工干预，那么这应被视作一种缺陷（Bug）。”  琐事的定义 🤔书中指出，琐事并不仅仅意味着“我不喜欢做的工作”。在工程任务中，每个人或多或少都会遇到琐事，而每个人对工作内容的满意度和喜好亦各有不同。此外，一些管理类的琐事是必须承担的，这类工作被归">
+    <meta name="description" content="前言📖on-call是一种工作安排，指工程师在特定时间段内负责随时待命，以应对系统的突发事件或紧急情况。on-call工程师的职责是确保系统的高可用性，及时处理系统警报，进行故障排查和修复，以最小化服务中断的影响。 on-call 工作的日常📅on-call工程师需要24&#x2F;7响应系统警报，保障系统的持续可靠性。主要任务包括：实时监控、故障排查、问题修复、和事后总结。 平衡工作量数量平">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SRE-Google运维解密-第五章减少琐事">
-<meta property="og:url" content="http://example.com/2024/08/28/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E4%BA%94%E7%AB%A0%E5%87%8F%E5%B0%91%E7%90%90%E4%BA%8B/index.html">
+<meta property="og:title" content="SRE-Google运维解密-第十一章on-call轮值">
+<meta property="og:url" content="http://example.com/2024/10/14/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0on-call%E8%BD%AE%E5%80%BC/index.html">
 <meta property="og:site_name" content="Azu blog">
-<meta property="og:description" content="前言📖本章更像是在阐述一种广泛适用的世俗哲理，而非技术理论。其理念不仅可以应用于技术工作，还能延伸到生活的方方面面。 “如果系统在正常运转过程中需要人工干预，那么这应被视作一种缺陷（Bug）。”  琐事的定义 🤔书中指出，琐事并不仅仅意味着“我不喜欢做的工作”。在工程任务中，每个人或多或少都会遇到琐事，而每个人对工作内容的满意度和喜好亦各有不同。此外，一些管理类的琐事是必须承担的，这类工作被归">
+<meta property="og:description" content="前言📖on-call是一种工作安排，指工程师在特定时间段内负责随时待命，以应对系统的突发事件或紧急情况。on-call工程师的职责是确保系统的高可用性，及时处理系统警报，进行故障排查和修复，以最小化服务中断的影响。 on-call 工作的日常📅on-call工程师需要24&#x2F;7响应系统警报，保障系统的持续可靠性。主要任务包括：实时监控、故障排查、问题修复、和事后总结。 平衡工作量数量平">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/SRE.png">
-<meta property="article:published_time" content="2024-08-28T03:15:47.000Z">
-<meta property="article:modified_time" content="2024-10-16T03:19:02.224Z">
+<meta property="article:published_time" content="2024-10-14T03:00:58.000Z">
+<meta property="article:modified_time" content="2024-10-16T07:17:11.277Z">
 <meta property="article:author" content="Azu">
 <meta property="article:tag" content="基础IT架构">
 <meta property="article:tag" content="SRE">
@@ -38,7 +38,7 @@
   
   
   
-  <title>SRE-Google运维解密-第五章减少琐事 - Azu blog</title>
+  <title>SRE-Google运维解密-第十一章on-call轮值 - Azu blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -217,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="SRE-Google运维解密-第五章减少琐事"></span>
+            <span id="subtitle" data-typed-text="SRE-Google运维解密-第十一章on-call轮值"></span>
           
         </div>
 
@@ -228,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-08-28 11:15" pubdate>
-          2024年8月28日 上午
+        <time datetime="2024-10-14 11:00" pubdate>
+          2024年10月14日 上午
         </time>
       </span>
     
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          502 字
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          19 分钟
+          5 分钟
         
       </span>
     
@@ -297,37 +297,18 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">SRE-Google运维解密-第五章减少琐事</h1>
+            <h1 id="seo-header">SRE-Google运维解密-第十一章on-call轮值</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="前言📖"><a href="#前言📖" class="headerlink" title="前言📖"></a>前言📖</h2><p>本章更像是在阐述一种广泛适用的世俗哲理，而非技术理论。其理念不仅可以应用于技术工作，还能延伸到生活的方方面面。 “如果系统在正常运转过程中需要人工干预，那么这应被视作一种缺陷（Bug）。” </p>
-<h2 id="琐事的定义-🤔"><a href="#琐事的定义-🤔" class="headerlink" title="琐事的定义 🤔"></a>琐事的定义 🤔</h2><p>书中指出，琐事并不仅仅意味着“我不喜欢做的工作”。在工程任务中，每个人或多或少都会遇到琐事，而每个人对工作内容的满意度和喜好亦各有不同。此外，一些管理类的琐事是必须承担的，这类工作被归纳为“流程开销”。流程开销通常是指与运维工作并无直接关联的任务，例如团队会议 、目标的制定与评估 、日报、周报及月报等 。此外，还有一些看似繁琐但具有长期价值的工作，例如调整过高频率的告警 ，这些任务虽重复性高且繁重，但并不属于琐事的范畴。</p>
-<p>那么，到底什么是琐事？ 书中指出，琐事是指运维过程中需要手动操作的、重复性的、可以被自动化的、短期战术性的且缺乏持久价值的工作。而且琐事与服务呈线性增长关系，这意味着琐事随服务的规模增大而成比例增加。尽管不是每件琐事都具备以上所有特性，但大多数琐事都符合其中的一个或多个属性。</p>
-<h2 id="名词解释-📚"><a href="#名词解释-📚" class="headerlink" title="名词解释 📚"></a>名词解释 📚</h2><h3 id="手动性-🤲"><a href="#手动性-🤲" class="headerlink" title="手动性 🤲"></a>手动性 🤲</h3><p>手动性是指需要人工操作才能完成的任务。例如，手动运行脚本以执行特定任务。尽管运行一个脚本比逐步手动执行要高效得多，但仍需投入人工操作的时间（与脚本执行时间无关），这部分时间应被视为琐事。在理想情况下，应通过自动化调度，例如定时或触发条件下自动执行任务，来消除手动干预，例如自动释放内存。</p>
-<h3 id="重复性-🔄"><a href="#重复性-🔄" class="headerlink" title="重复性 🔄"></a>重复性 🔄</h3><p>若一项任务在短期内重复执行不超过三次，这并不属于琐事的范畴。琐事指的是那些需要不断重复的工作，就如同流水线上的拧螺丝 。如果为了某个问题的解决而进行反复实验，这并不属于琐事，因为其目标具有探索性和单次性。</p>
-<h3 id="可自动化的-🤖"><a href="#可自动化的-🤖" class="headerlink" title="可自动化的 🤖"></a>可自动化的 🤖</h3><p>若某项任务可以被计算机以与人类同样甚至超越人类的水准来执行，或者通过设计变更从根本上消除对该任务的需求，那么这项任务就属于琐事。在工作中有很多此类琐事，例如 DHCP 服务的设置，通过自动化的方式可以更有效地完成。而如果某项任务的主观判断非常关键且不可替代，那么它就不能归为琐事（如流量控制，尽管需要根据用户需求调整流量，但机器无法判断人情世故的优先级，例如为领导设定更高流量阈值）。</p>
-<h3 id="战术性-⚔️"><a href="#战术性-⚔️" class="headerlink" title="战术性 ⚔️"></a>战术性 ⚔️</h3><p>战术性工作是指突然出现的、被动响应的任务，其往往缺乏战略性的规划。例如，处理系统告警是典型的琐事 🚨，虽然这类工作难以完全避免，但应尽力减少其频率和规模。</p>
-<h3 id="缺乏持久价值-⏳"><a href="#缺乏持久价值-⏳" class="headerlink" title="缺乏持久价值 ⏳"></a>缺乏持久价值 ⏳</h3><p>如果一项任务完成后服务的整体状态没有实质性改变，那么这就是琐事。但若该任务能够带来服务的改进与优化，那么它就不再属于琐事的范畴 。</p>
-<h3 id="与服务的规模同步增长-📈"><a href="#与服务的规模同步增长-📈" class="headerlink" title="与服务的规模同步增长 📈"></a>与服务的规模同步增长 📈</h3><p>书中指出，若某项工作随服务规模、流量或用户数量的增长呈线性增加，则该任务可能属于琐事。一个经过良好管理和设计的服务应至少可以应对数量级的增长，而无需大量额外的手动介入。</p>
-<h2 id="为什么琐事越少越好？-🤔➡️😊"><a href="#为什么琐事越少越好？-🤔➡️😊" class="headerlink" title="为什么琐事越少越好？ 🤔➡️😊"></a>为什么琐事越少越好？ 🤔➡️😊</h2><p>如果琐事不加以控制，其数量将会不断增长，最终占据每个人 100% 的时间 ⏳。书中建议，合格的 SRE 工程师所花费在琐事上的时间不应超过 50%。</p>
-<p>统计显示，琐事的主要来源是中断性工作（即与服务相关的非紧急邮件和电子邮件 📧），其次是 on-call（紧急值班）🔔，再之后是发布管理和数据更新等任务。在 Google 的 SRE 团队中，琐事占用了约 33% 的时间。</p>
-<h2 id="什么是工程工作-🚀"><a href="#什么是工程工作-🚀" class="headerlink" title="什么是工程工作 🚀"></a>什么是工程工作 🚀</h2><p>工程工作是一种创新性且需要主观判断的工作，其通常符合长期战略目标，旨在对服务进行持久性改善。工程工作注重通过设计解决问题，解决方案越具普适性越好。工程工作应有助于在不增加人员的前提下，提升团队的服务能力。</p>
-<h3 id="常见的工程工作-🛠️"><a href="#常见的工程工作-🛠️" class="headerlink" title="常见的工程工作 🛠️"></a>常见的工程工作 🛠️</h3><h4 id="软件工程-💻"><a href="#软件工程-💻" class="headerlink" title="软件工程 💻"></a>软件工程 💻</h4><p>软件工程涉及代码的编写或修改，以及相关的设计和文档工作。例如：编写自动化脚本，开发工具或框架，增加服务的可扩展性与可靠性，或是修改基础设施代码以使其更稳健。</p>
-<h4 id="系统工程-🖥️"><a href="#系统工程-🖥️" class="headerlink" title="系统工程 🖥️"></a>系统工程 🖥️</h4><p>系统工程包括配置生产环境、修改现有配置，或通过一次性工作产生持久改进的系统文档撰写工作。例如：部署与更新监控系统、配置负载均衡 、服务器配置、操作系统的参数调优及负载均衡器的部署。系统工程还涵盖了与研发团队的架构设计和生产环境相关的咨询工作。</p>
-<h4 id="琐事-🧹"><a href="#琐事-🧹" class="headerlink" title="琐事 🧹"></a>琐事 🧹</h4><p>与运维服务相关的重复性手工劳动。</p>
-<h4 id="流程负担-🗂️"><a href="#流程负担-🗂️" class="headerlink" title="流程负担 🗂️"></a>流程负担 🗂️</h4><p>与运维工作无直接关联的行政类工作。例如：招聘、人力资源相关书面工作、团队或公司会议、定期任务系统清理、工作总结、同行评审和自我评估，以及培训课程等。</p>
-<h2 id="琐事繁多是否一定不好-❓"><a href="#琐事繁多是否一定不好-❓" class="headerlink" title="琐事繁多是否一定不好 ❓"></a>琐事繁多是否一定不好 ❓</h2><p>尽管琐事往往令人感到乏味和低效 😒，但适量的琐事也可以带来某种程度上的满足感和秩序感 。尤其是当琐事的数量适中时，已知且重复的工作任务反而可以起到平衡心态的作用，完成这些任务后可能会有一种成就感和短期胜利的愉悦感 。某些琐事也可能是一种低风险和低压力的活动，因此一些员工可能更倾向于完成这些任务。</p>
-<p>然而，尽管琐事的存在并非全然负面，但其仍会对团队及个人带来诸多不利影响：</p>
-<h3 id="职业停滞-🛑"><a href="#职业停滞-🛑" class="headerlink" title="职业停滞 🛑"></a>职业停滞 🛑</h3><p>长期从事低风险、低压力的活动，或处理一些脏活累活，不利于员工的职业成长。通过不断重复低层次的工作，难以获得职业发展的突破。</p>
-<h3 id="士气低落-📉"><a href="#士气低落-📉" class="headerlink" title="士气低落 📉"></a>士气低落 📉</h3><p>每个人对琐事的承受能力各有不同，但人们的耐心是有限的。过量的琐事将导致员工精疲力竭、产生厌倦情绪，从而影响士气 。</p>
-<h3 id="角色模糊-🤷‍♀️"><a href="#角色模糊-🤷‍♀️" class="headerlink" title="角色模糊 🤷‍♀️"></a>角色模糊 🤷‍♀️</h3><p>个人或团队若长期专注于琐事，会使自身在组织中的角色定位变得模糊，可能产生“自己并非一名运维工程师”的错觉 。</p>
-<h3 id="效率低下-🐢"><a href="#效率低下-🐢" class="headerlink" title="效率低下 🐢"></a>效率低下 🐢</h3><p>琐事占据的时间越多，团队完成核心任务的进度就越慢，从而导致整体效率低下，影响工作成果。</p>
-<h3 id="开创不良先例-🚧"><a href="#开创不良先例-🚧" class="headerlink" title="开创不良先例 🚧"></a>开创不良先例 🚧</h3><p>如果 SRE 团队过于主动承担琐事，研发团队可能会更加依赖 SRE 来处理这些任务，甚至会将原本属于开发职责的运维任务转嫁给 SRE。</p>
-<h3 id="增加团队摩擦-⚡"><a href="#增加团队摩擦-⚡" class="headerlink" title="增加团队摩擦 ⚡"></a>增加团队摩擦 ⚡</h3><p>即使某个员工对琐事毫无怨言，他的同事或团队中其他成员却可能对此感到不满 😠。若团队承担了过多琐事，实际上是鼓励团队中最有才华的工程师去寻找更具挑战性的工作机会。</p>
-<h3 id="违背承诺-🤥"><a href="#违背承诺-🤥" class="headerlink" title="违背承诺 🤥"></a>违背承诺 🤥</h3><p>那些因工程性工作而加入 SRE 团队的新员工，或内部转岗至 SRE 的员工，可能会觉得受到了欺骗，这对于公司的士气极为不利。</p>
-<h2 id="小结-📌"><a href="#小结-📌" class="headerlink" title="小结 📌"></a>小结 📌</h2><p>本章阐述了琐事的定义、琐事的利弊以及为何需要减少琐事的存在。在实际工作中，琐事占据了很大部分的内容，因此我们需要通过不断努力来减少琐事，尽量将精力集中于那些有助于个人成长与发展的工作中，以获得更大的职业收益 。</p>
+                <h2 id="前言📖"><a href="#前言📖" class="headerlink" title="前言📖"></a>前言📖</h2><p>on-call是一种工作安排，指工程师在特定时间段内负责随时待命，以应对系统的突发事件或紧急情况。on-call工程师的职责是确保系统的高可用性，及时处理系统警报，进行故障排查和修复，以最小化服务中断的影响。</p>
+<h2 id="on-call-工作的日常📅"><a href="#on-call-工作的日常📅" class="headerlink" title="on-call 工作的日常📅"></a>on-call 工作的日常📅</h2><p>on-call工程师需要24&#x2F;7响应系统警报，保障系统的持续可靠性。<br>主要任务包括：实时监控、故障排查、问题修复、和事后总结。</p>
+<h2 id="平衡工作量"><a href="#平衡工作量" class="headerlink" title="平衡工作量"></a>平衡工作量</h2><p>数量平衡：合理分配on-call频率，防止个别工程师过于频繁轮值。<br>质量平衡：任务应当多样化，让工程师接触不同类型的问题，避免过度单一的任务造成倦怠。</p>
+<h2 id="补贴与支持系统"><a href="#补贴与支持系统" class="headerlink" title="补贴与支持系统"></a>补贴与支持系统</h2><p>on-call任务具有额外补贴，作为对工程师应急工作的认可。<br>Google提供自动化工具、流程文档、和优化的警报系统以减少不必要的手动干预，增加工程师的安全感。</p>
+<h2 id="压力管理的重要性"><a href="#压力管理的重要性" class="headerlink" title="压力管理的重要性"></a>压力管理的重要性</h2><p>过多的on-call任务会导致工程师倦怠，因此需要合理分配任务量，避免运维过载。<br>定期进行事后总结，回顾问题和解决过程，确保工程师能从任务中学习并成长。</p>
+<h2 id="运维压力不足的挑战"><a href="#运维压力不足的挑战" class="headerlink" title="运维压力不足的挑战"></a>运维压力不足的挑战</h2><p>如果on-call任务过少，工程师可能缺乏实战经验，对服务了解不够深入。因此适当的任务数量可以帮助工程师更好地了解系统并锻炼应急响应能力。</p>
+<h2 id="小结📝"><a href="#小结📝" class="headerlink" title="小结📝"></a>小结📝</h2><p>该章节总结了有效的on-call管理策略，即在维持高效运维和服务可靠性的同时，确保工程师的工作量在合理的范围内。<br>强调培养工程师的成长，使他们在不断积累经验的过程中逐步提升技能。</p>
 
                 
               </div>
@@ -377,8 +358,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SRE-Google运维解密-第五章减少琐事</div>
-      <div>http://example.com/2024/08/28/SRE-Google运维解密-第五章减少琐事/</div>
+      <div>SRE-Google运维解密-第十一章on-call轮值</div>
+      <div>http://example.com/2024/10/14/SRE-Google运维解密-第十一章on-call轮值/</div>
     </div>
     <div class="license-meta">
       
@@ -390,7 +371,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年8月28日</div>
+          <div>2024年10月14日</div>
         </div>
       
       
@@ -422,18 +403,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/08/29/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E5%85%AD%E7%AB%A0%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7/" title="SRE-Google运维解密-第六章分布式系统监控">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">SRE-Google运维解密-第六章分布式系统监控</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/08/16/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E5%9B%9B%E7%AB%A0%E6%9C%8D%E5%8A%A1%E8%B4%A8%E9%87%8F%E7%9B%AE%E6%A0%87/" title="SRE:Google运维解密_第四章服务质量目标">
-                        <span class="hidden-mobile">SRE:Google运维解密_第四章服务质量目标</span>
+                      <a href="/2024/10/03/SRE-Google%E8%BF%90%E7%BB%B4%E8%A7%A3%E5%AF%86-%E7%AC%AC%E5%8D%81%E7%AB%A0%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%9C%89%E6%95%88%E6%8A%A5%E8%AD%A6/" title="SRE-Google运维解密-第十章基于时间序列数据进行有效报警">
+                        <span class="hidden-mobile">SRE-Google运维解密-第十章基于时间序列数据进行有效报警</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
