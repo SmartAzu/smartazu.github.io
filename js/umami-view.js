@@ -1,25 +1,20 @@
 // 从配置文件中获取 umami 的配置
-const website_id = CONFIG.web_analytics.umami.website_id;
+const umamiCfg = CONFIG.web_analytics && CONFIG.web_analytics.umami;
+
+// 如果未配置相关字段，则直接退出
+if (!umamiCfg || !umamiCfg.website_id || !umamiCfg.api_server || !umamiCfg.token) {
+  console.warn('Umami analytics config missing');
+  // eslint-disable-next-line no-useless-return
+  return;
+}
+
 // 拼接请求地址
-const request_url = `${CONFIG.web_analytics.umami.api_server}/websites/${website_id}/stats`;
+const website_id = umamiCfg.website_id;
+const request_url = `${umamiCfg.api_server}/websites/${website_id}/stats`;
 
-const start_time = new Date(CONFIG.web_analytics.umami.start_time).getTime();
+const start_time = new Date(umamiCfg.start_time).getTime();
 const end_time = new Date().getTime();
-const token = CONFIG.web_analytics.umami.token;
-
-// 检查配置是否为空
-if (!website_id) {
-  throw new Error("Umami website_id is empty");
-}
-if (!request_url) {
-  throw new Error("Umami request_url is empty");
-}
-if (!start_time) {
-  throw new Error("Umami start_time is empty");
-}
-if (!token) {
-  throw new Error("Umami token is empty");
-}
+const token = umamiCfg.token;
 
 // 构造请求参数
 const params = new URLSearchParams({
